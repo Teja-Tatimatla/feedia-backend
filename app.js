@@ -6,6 +6,10 @@ const geolib = require('geolib');
 const OpenAI = require('openai');
 require('dotenv').config();
 
+const mainChatLog = './logs/main_chat_log.ndjson';
+const therapyChatLog = './logs/therapy_chat_log.ndjson';
+const wraparoundChatLog = './logs/warparound_chat_log.ndjson';
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -76,7 +80,7 @@ app.post('/chat-meal', async (req, res) => {
       conversation: [
         {
           role: 'assistant',
-          content: 'Hi there! 👋 I’m here to help you find nearby food pantries based on your needs. Let’s get started — when are you planning to get food?'
+          content: 'Hi there! 👋 I’m here to help you find nearby food pantries that match your needs. Let’s get started — when are you planning to get food? Just let me know the day and time!'
         }
       ]
     });
@@ -158,6 +162,11 @@ app.post('/chat-meal', async (req, res) => {
       }
     }
 
+    if(finalMessage != '') {
+      const lines = [...messages, {"role":"user","content":finalMessage}].map(entry => JSON.stringify(entry)).join('\n') + '\n' + '\n'; // Ideally, this is stored in DB. This is not very inefficient
+      fs.appendFile(mainChatLog, lines, (err) => {});
+    }
+
     res.json({
       conversation: [
         ...messages,
@@ -209,6 +218,9 @@ app.post('/therapy', async (req, res) => {
     const gptReply = completion.choices[0].message;
 
     const updatedConversation = [...messages, gptReply];
+
+    //const lines = messages.map(entry => JSON.stringify(entry)).join('\n') + '\n'; // Ideally, this is stored in DB. This is not very inefficient
+    //fs.appendFile(therapyChatLog, lines, (err) => {});
 
     res.json({ conversation: updatedConversation });
   } catch (error) {
@@ -334,6 +346,11 @@ app.post('/wraparound-help', async (req, res) => {
         ).join('\n\n');
       } else {
         replyText = `I couldn't find any pantries offering ${args.service} that are open at that time. Would you like to try a different time or service?`;
+      }
+
+      if(replyText != '') {
+        const lines = [...messages, {"role":"user","content":replyText}].map(entry => JSON.stringify(entry)).join('\n') + '\n' + '\n'; // Ideally, this is stored in DB. This is not very inefficient
+        fs.appendFile(wraparoundChatLog, lines, (err) => {});
       }
 
       return res.json({

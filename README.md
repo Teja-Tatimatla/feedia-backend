@@ -1,1 +1,1 @@
-## Needs lot of work with refactoring, optimizing and code clean up. For now all the code is in app.js
+## Needs lot of work with refactoring, optimization and code clean up. For now all the code is in app.js
