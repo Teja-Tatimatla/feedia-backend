@@ -1,3 +1,4 @@
+/*
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
@@ -17,7 +18,6 @@ app.use(express.json());
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 function findClosestOpenPantries(lat, lon, day, time, travelMode, jsonFilePath, kitchenAvailable = true, canTravel = true, foodPreferences = []) {
-  console.log(day)
   const pantriesData = JSON.parse(fs.readFileSync(path.resolve(jsonFilePath), 'utf8'));
 
   const openPantries = pantriesData.filter(pantry => {
@@ -383,3 +383,4 @@ app.post('/wraparound-help', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+*/
