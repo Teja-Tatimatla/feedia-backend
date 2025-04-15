@@ -17,6 +17,7 @@ app.use(express.json());
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 function findClosestOpenPantries(lat, lon, day, time, travelMode, jsonFilePath, kitchenAvailable = true, canTravel = true, foodPreferences = []) {
+  console.log(day)
   const pantriesData = JSON.parse(fs.readFileSync(path.resolve(jsonFilePath), 'utf8'));
 
   const openPantries = pantriesData.filter(pantry => {
@@ -69,7 +70,7 @@ If no, ask them if one of their relatives or friends can pick up food for them.
 If they have no one to pick up tell them that you\'ll look for food pantries with delivery service.
 And finally dietary restrictions and preferences (if they are Diabetic, Hypertension, Low Sodium, Low Sugar, Fresh Produce, Halal).
 Use this information to infer travel mode, kitchen availability, and dietary needs.
-Once enough details are available, call the findClosestOpenPantries function including the kitchenAvailable, canTravel, foodPreferences values, and user\'s latitude and longitude from the request body and the inferred information.`;
+Once enough details are available, call the findClosestOpenPantries function including the kitchenAvailable, canTravel, foodPreferences values, and user\'s latitude and longitude from the request body and the inferred information. Make sure you derive and send send only the weekday names (time zone EST) to the function if natural date expressions are used.`;
 
 app.post('/chat-meal', async (req, res) => {
   const { messages, location } = req.body;
@@ -129,7 +130,8 @@ app.post('/chat-meal', async (req, res) => {
           }
         }
       ],
-      tool_choice: 'auto'
+      tool_choice: 'auto',
+      temperature: 0.2
     });
 
     let finalMessage = '';
