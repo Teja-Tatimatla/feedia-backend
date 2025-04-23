@@ -7,14 +7,34 @@ require('dotenv').config();
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 async function therapyChatHandler(req, res) {
-  const { messages } = req.body;
+  const { messages, language } = req.body;
+
+    switch (language) {
+      case 'en':
+        message = constants.greetings_therapy_en;
+        break;
+      case 'es':
+        message = constants.greetings_therapy_es;
+        break;
+      case 'fr':
+        message = constants.greetings_therapy_fr;
+        break;
+      case 'te':
+        message = constants.greetings_therapy_te;
+        break;
+      case 'ja':
+        message = constants.greetings_therapy_ja;
+        break;
+      default:
+        message = constants.greetings_therapy_en;
+    }
 
   if (!messages?.length) {
     return res.json({
       conversation: [
         {
           role: 'assistant',
-          content: 'Hi there. I’m really glad you’re here. This is a safe and judgment-free space. You can talk to me about anything — I’m here to listen, whenever you’re ready. 💙'
+          content: message,
         }
       ]
     });

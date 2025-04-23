@@ -8,10 +8,30 @@ require('dotenv').config();
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 async function wraparoundHelpChatHandler(req, res) {
-  const { messages, location } = req.body;
+  const { messages, location, language } = req.body;
 
   if (!location?.latitude || !location?.longitude) {
     return res.status(400).json({ error: 'User location is required in request body' });
+  }
+
+  switch (language) {
+    case 'en':
+      message = constants.greetings_wraparound_en;
+      break;
+    case 'es':
+      message = constants.greetings_wraparound_es;
+      break;
+    case 'fr':
+      message = constants.greetings_wraparound_fr;
+      break;
+    case 'te':
+      message = constants.greetings_wraparound_te;
+      break;
+    case 'ja':
+      message = constants.greetings_wraparound_ja;
+      break;
+    default:
+      message = constants.greetings_wraparound_en;
   }
 
   if (!messages?.length) {
@@ -19,7 +39,7 @@ async function wraparoundHelpChatHandler(req, res) {
       conversation: [
         {
           role: 'assistant',
-          content: 'Hello. I can assist you in finding local support services including housing, medical care, job programs, and legal assistance — all provided by community partners at no cost. What type of help are you looking for today?'
+          content: message,
         }
       ]
     });

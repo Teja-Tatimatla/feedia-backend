@@ -3,19 +3,40 @@ const fs = require('fs');
 const { findClosestOpenPantries } = require('../utils/pantry');
 const { mainChatLog, pantryDataPath } = require('../utils/constants');
 const { mainChatSystemPrompt, chatMealToolDefinition } = require('../utils/prompts');
+const constants = require('../utils/constants');
 require('dotenv').config();
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 async function mealChatHandler(req, res) {
-  const { messages, location } = req.body;
+  const { messages, location, language } = req.body;
+
+  switch (language) {
+    case 'en':
+      message = constants.greetings_meal_en;
+      break;
+    case 'es':
+      message = constants.greetings_meal_es;
+      break;
+    case 'fr':
+      message = constants.greetings_meal_fr;
+      break;
+    case 'te':
+      message = constants.greetings_meal_te;
+      break;
+    case 'ja':
+      message = constants.greetings_meal_ja;
+      break;
+    default:
+      message = constants.greetings_meal_en;
+  }
 
   if (!messages?.length) {
     return res.json({
       conversation: [
         {
           role: 'assistant',
-          content: 'Hi there! 👋 I\'m here to help you find nearby food pantries that match your needs. Let\'s get started — when are you planning to get food? Just let me know the day and time!'
+          content: message,
         }
       ]
     });
