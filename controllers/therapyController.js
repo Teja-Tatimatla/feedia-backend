@@ -1,6 +1,7 @@
 const OpenAI = require('openai');
 const { systemPromptTherapy } = require('../utils/prompts');
-const { therapyChatLog } = require('../utils/constants');
+//const { therapyChatLog } = require('../utils/constants');
+const constants = require('../utils/constants');
 const fs = require('fs');
 require('dotenv').config();
 
@@ -8,6 +9,8 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 async function therapyChatHandler(req, res) {
   const { messages, language } = req.body;
+
+  console.log(language);
 
     switch (language) {
       case 'en':

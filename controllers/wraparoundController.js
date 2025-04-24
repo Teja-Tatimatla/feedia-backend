@@ -3,6 +3,7 @@ const fs = require('fs');
 const { systemPromptWrapAroundServices, wraparoundToolDefinition } = require('../utils/prompts');
 const { findWraparoundServices } = require('../utils/wraparound');
 const { wraparoundChatLog, pantryDataPath } = require('../utils/constants');
+const constants = require('../utils/constants');
 require('dotenv').config();
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
